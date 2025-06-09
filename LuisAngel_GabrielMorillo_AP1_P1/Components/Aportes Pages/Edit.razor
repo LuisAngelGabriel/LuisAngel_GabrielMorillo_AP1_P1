@@ -1,5 +1,134 @@
-﻿<h3>Edit</h3>
+﻿@page "/Aportes/Edit/{AportesId:int}"
+@rendermode InteractiveServer
+@inject AportesService AportesService
+@inject NavigationManager NavigationManager
+
+@using LuisAngel_GabrielMorillo_AP1_P1.Models
+@using System.Globalization
+@using LuisAngel_GabrielMorillo_AP1_P1.Service
+
+
+<PageTitle>Editar Aporte</PageTitle>
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header text-center">
+            <h5 class="mb-0">Editar Aporte</h5>
+        </div>
+
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6 offset-md-3">
+                    <EditForm Model="@aporte" OnValidSubmit="@GuardarCambios">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">ID:</label>
+                            <input type="text" class="form-control" @bind="aporte.AportesId" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nombre:</label>
+                            <InputText class="form-control" @bind-Value="aporte.Nombres" />
+                            <ValidationMessage For="@(() => aporte.Nombres)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Monto:</label>
+                            <InputNumber class="form-control" @bind-Value="aporte.Monto" />
+                            <ValidationMessage For="@(() => aporte.Monto)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Fecha:</label>
+                            <InputDate class="form-control" @bind-Value="aporte.Fecha" />
+                            <ValidationMessage For="@(() => aporte.Fecha)" />
+                        </div>
+
+                         <div class="text-center mt-4">
+                            <button type="button" class="btn btn-danger me-2" @onclick="MostrarConfirmacionEliminar">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </button>
+                            <button type="button" class="btn btn-secondary me-2" @onclick="Volver">
+                                <i class="bi bi-arrow-left"></i> Volver
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Guardar
+                            </button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (mostrarModalEliminar)
+{
+    <div class="modal fade show" style="display: block; background-color: rgba(0,0,0,0.5);" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Eliminar Aporte</h5>
+                    <button type="button" class="btn-close" @onclick="CerrarModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que quieres eliminar este aporte?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CerrarModal">Volver</button>
+                    <button type="button" class="btn btn-danger" @onclick="EliminarAporte">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 
 @code {
+    [Parameter]
+    public int AportesId { get; set; }
 
+    private Aportes aporte = new();
+    private bool mostrarModalEliminar = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AportesId > 0)
+        {
+            var encontrado = await AportesService.Buscar(AportesId);
+            if (encontrado != null)
+            {
+                aporte = encontrado;
+            }
+        }
+    }
+
+    private void MostrarConfirmacionEliminar()
+    {
+        mostrarModalEliminar = true;
+    }
+
+    private void CerrarModal()
+    {
+        mostrarModalEliminar = false;
+    }
+
+    private async Task EliminarAporte()
+    {
+        await AportesService.Eliminar(AportesId);
+        NavigationManager.NavigateTo("/Aportes/Index");
+    }
+
+    private void Volver()
+    {
+        NavigationManager.NavigateTo("/Aportes/Index");
+    }
+
+    private async Task GuardarCambios()
+    {
+        await AportesService.Guardar(aporte);
+        NavigationManager.NavigateTo("/Aportes/Index");
+    }
 }
