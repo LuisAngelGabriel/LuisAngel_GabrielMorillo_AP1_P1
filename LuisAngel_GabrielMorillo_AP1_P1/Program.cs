@@ -2,6 +2,7 @@ using LuisAngel_GabrielMorillo_AP1_P1.Components;
 using LuisAngel_GabrielMorillo_AP1_P1.DAL;
 using Microsoft.EntityFrameworkCore;
 using Blazored.Toast;
+using LuisAngel_GabrielMorillo_AP1_P1.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,9 @@ var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
 builder.Services.AddDbContextFactory<Contexto>(o => o.UseSqlServer(ConStr));
 
 builder.Services.AddBlazoredToast();
+
+builder.Services.AddScoped<AportesService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
