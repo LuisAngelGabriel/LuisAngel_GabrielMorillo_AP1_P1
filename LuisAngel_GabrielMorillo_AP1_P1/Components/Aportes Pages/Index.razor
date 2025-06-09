@@ -1,0 +1,97 @@
+﻿@page "/Registro/Index"
+@rendermode InteractiveServer
+
+@using System.Globalization
+
+<PageTitle>Consulta de aportes</PageTitle>
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header text-center">
+            <h5 class="mb-0">Consulta aportes</h5>
+        </div>
+
+        <div class="card-body">
+            <div class="row mb-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Filtrar por</label>
+                    <select class="form-select" disabled>
+                        <option selected>Id</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Búsqueda</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" @bind="idBusqueda" placeholder="Buscar por Id" />
+                        <button class="btn btn-outline-primary" @onclick="BuscarPorId">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Desde</label>
+                    <input type="date" class="form-control" />
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Hasta</label>
+                    <input type="date" class="form-control" />
+                </div>
+
+                <div class="col-md-2 text-end">
+                    <label class="d-block invisible">.</label>
+                    <a href="/Registro/Create" class="btn btn-success">
+                        <i class="bi bi-plus-circle me-1"></i> Crear
+                    </a>
+                </div>
+            </div>
+
+            <table class="table table-bordered text-center align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Id</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in registrosFiltrados)
+                    {
+                        <tr>
+                            <td>@item</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <label class="fw-bold">Conteo</label>
+                    <input type="text" class="form-control" value="@registrosFiltrados.Count" readonly />
+                </div>
+                <div class="col-md-6 text-end">
+                    <label class="fw-bold">Total</label>
+                    <input type="text" class="form-control text-end" value="@((registrosFiltrados.Count * 750.0).ToString("N2", CultureInfo.InvariantCulture))" readonly />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<int> registros = new() { 1, 2, 3, 4, 5 };
+    private List<int> registrosFiltrados = new();
+    private int idBusqueda;
+
+    protected override void OnInitialized()
+    {
+        registrosFiltrados = registros;
+    }
+
+    private void BuscarPorId()
+    {
+        registrosFiltrados = registros
+            .Where(r => r == idBusqueda)
+            .ToList();
+    }
+}
