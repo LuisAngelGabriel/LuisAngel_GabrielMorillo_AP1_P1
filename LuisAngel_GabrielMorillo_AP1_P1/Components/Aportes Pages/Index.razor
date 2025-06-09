@@ -88,7 +88,7 @@
                 </div>
                 <div class="col-md-6 text-end">
                     <label class="fw-bold">Total</label>
-                    <input type="text" class="form-control text-end" value="@((AportesFiltrados.Count * 750.0).ToString("N2", CultureInfo.InvariantCulture))" readonly />
+                    <input type="text" class="form-control text-end" value="@AportesFiltrados.Sum(a => a.Monto).ToString("N2", CultureInfo.InvariantCulture)" readonly />
                 </div>
             </div>
         </div>
