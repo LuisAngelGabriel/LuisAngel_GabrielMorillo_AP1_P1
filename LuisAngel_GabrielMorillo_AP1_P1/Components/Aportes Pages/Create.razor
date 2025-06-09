@@ -1,5 +1,65 @@
-﻿<h3>Create</h3>
+﻿@page "/Aportes/Create"  
+@using LuisAngel_GabrielMorillo_AP1_P1.Models  
+@using LuisAngel_GabrielMorillo_AP1_P1.Service  
+@inject AportesService aportesService  
+@inject NavigationManager navigationManager  
+@rendermode InteractiveServer  
 
-@code {
+<PageTitle>Create</PageTitle>  
+<div class="container mt-4">  
+    <div class="card shadow-sm">  
+        <div class="card-header text-center">  
+            <h5 class="mb-0">Crear Nuevo Aporte</h5>  
+        </div>  
+
+         <div class="card-body">  
+            <EditForm Model="@nuevoAporte" OnValidSubmit="Guardar">  
+                <DataAnnotationsValidator />  
+                <ValidationSummary />  
+
+                <div class="mb-3">  
+                    <label class="form-label">Nombres</label>  
+                    <InputText class="form-control" @bind-Value="nuevoAporte.Nombres" />  
+                </div>  
+
+                  <div class="mb-3">  
+                    <label class="form-label">Monto</label>  
+                    <InputNumber class="form-control" @bind-Value="nuevoAporte.Monto" />  
+                </div>  
+
+                <div class="mb-3">  
+                    <label class="form-label">Fecha</label>  
+                    <InputDate class="form-control" @bind-Value="nuevoAporte.Fecha" />  
+                </div>  
+
+                <button type="submit" class="btn btn-success">Guardar</button>  
+                <button type="button" class="btn btn-secondary ms-2" @onclick="Cancelar">Cancelar</button>  
+
+            </EditForm>  
+        </div>  
+    </div>  
+</div>  
+@code {  
+
+    private Aportes nuevoAporte = new()  
+    {  
+        Fecha = DateOnly.FromDateTime(DateTime.Now)  
+    };  
+
+    private async Task Guardar()  
+    {  
+        bool resultado = await aportesService.Guardar(nuevoAporte);  
+
+        if (resultado)  
+        {  
+            navigationManager.NavigateTo("/Aportes/Index");  
+        }  
+
+    }  
+
+    private void Cancelar()  
+    {  
+        navigationManager.NavigateTo("/Aportes/Index");  
+    }  
 
 }
