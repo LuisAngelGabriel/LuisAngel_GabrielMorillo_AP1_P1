@@ -8,5 +8,8 @@ namespace LuisAngel_GabrielMorillo_AP1_P1.Models
         [Key]
 
         public int Id { get; set; }
+
+        //Listo para inicar.
+
     }
 }
